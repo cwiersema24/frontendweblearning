@@ -216,5 +216,132 @@ describe('types in Typescript', () => {
 
         });
     });
+    describe('object literals', () => {
+        it('have an implicit type', () => {
+            const book = {
+                title: 'Reality',
+                author: 'Kingskey',
+                publisher: 'Random House',
+                year: 2008
+            };
 
+        });
+        it('explicit object literals with an interface', () => {
+            interface Book {
+                title: String;
+                author: String;
+                publisher: String;
+                year: Number;
+                subtitle?: String;
+            };
+
+            const reality: Book = {
+                title: 'Reality',
+                author: 'Kingskey',
+                publisher: 'Random House',
+                year: 2008,
+                subtitle: 'Cool stuff you did\'t know'
+            };
+            const hw: Book = {
+                title: 'High Weirdness',
+                author: 'Erik Davis',
+                publisher: 'OUP',
+                year: 2017
+            };
+        });
+        it('expando objects', () => {
+            interface Book {
+                title: String;
+                author: String;
+                publisher: String;
+                year: Number;
+                subtitle?: String;
+                [key: string]: any
+            };
+            const reality: Book = {
+                title: 'Reality',
+                author: 'Kingskey',
+                publisher: 'Random House',
+                year: 2008,
+                subtitle: 'Cool stuff you did\'t know',
+                reviews: ['Interesting', 'Boring', 'A+++ would buy again'],
+                genre: 'Philosophy'
+            };
+
+            interface Vehicle {
+                vin: string;
+                make: string;
+                model: string;
+            }
+            interface Vehicles {
+                [vin: string]: Vehicle
+            }
+
+            const vehicles: Vehicles = {
+                '928398298': { vin: '928398298', make: 'Honda', model: 'Pilot' },
+                'J3779739': { vin: 'J3779739', make: 'Chevy', model: 'Bolt' }
+            }
+
+
+            expect(vehicles['J3779739'].model).toBe('Bolt');
+
+
+            interface Dictionary<T> {
+                [key: string]: T
+            }
+
+
+            const library: Dictionary<Book> = {
+                'Reality': reality,
+                'High Weirdness': { title: 'High Weirdness', author: 'Davis', publisher: 'MIT', year: 2018 }
+            }
+
+
+            expect(library['High Weirdness'].author).toBe('Davis');
+
+
+        });
+        it('structuaral typing - aka duck typing', () => {
+            interface ThingWithBody { body: string }
+            function logMessage(message: { body: string }) {
+                console.log(`At ${new Date().toISOString()} you got the following message: ${message.body}`);
+            }
+            logMessage({ body: 'TACOS' });
+            const phoneCall = {
+                from: 'Mom',
+                body: 'Call me, you slacker!'
+            }
+            logMessage(phoneCall);
+        });
+    });
+    describe('function literals', () => {
+        it('three different ways to declare them', () => {
+            //Named function
+            function add(a: number, b: number): number {
+                return a + b;
+            }
+            //Anonymous Functions
+            const subtract = (a: number, b: number): number => a - b;
+
+            expect(add(10, 2)).toBe(12);
+            expect(subtract(10, 2)).toBe(8);
+            expect(((a: number, b: number) => a / b)(10, 2)).toBe(5);
+        });
+        it('a couple quick details about the syntax for arrow functions', () => {
+            type MathOp = ((a: number, b: number) => number);
+
+            const add: MathOp = (a, b) => a + b;
+
+            const division: MathOp = (a, b) => {
+                if (b === 0) {
+                    throw new Error('Are you trying to open a black hole or something');
+                } else {
+                    return a / b;
+                }
+            }
+            type Identitiy = (a: number) => number;
+            const mockingBird: Identitiy = a => a;
+        });
+
+    });
 });
