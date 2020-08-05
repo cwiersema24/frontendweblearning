@@ -10,3 +10,7 @@ export class Monkey {
 }
 export type MathThingy = number;
 export type PI = 3.14;
+
+export function numberToCurrancyString(num: number) {
+    return num.toFixed(2).toString();
+}

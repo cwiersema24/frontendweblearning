@@ -1,57 +1,96 @@
 /* import { Employee } from "../src/hr/employee";
 import { Retiree } from "../src/hr/retiree";
 import { Contractor } from "../src/hr/contractor"; */
-import * as fromHr from "../src/hr";
-import { Employee } from "../src/hr";
+import * as fromHr from '../src/hr';
+import { Employee } from '../src/hr';
 
 describe('modules', () => {
 
+
     describe('using a barrel', () => {
 
-        /* it('creating some stuff', () => {
-            const emp = new fromHr.Employee();
-            const ret = new fromHr.Retiree();
-            const con = new fromHr.Contractor();
-        }); */
-        it('creating stuff', () => {
-            const dale = new Employee('Dale', 'Cooper');
+        it('creating some stuff', () => {
+
+            const dale = new fromHr.Employee('Dale', 'Cooper');
 
             dale.job = 'Special Agent';
+
             expect(dale.salary).toBe(80_000);
             dale.giveRaise(10_000);
             expect(dale.salary).toBe(90_000);
+
+            // dale.salary = 1_000_000;// I want this to fail compilation
+
             expect(dale.firstName).toBe('Dale');
             expect(dale.lastName).toBe('Cooper');
+
             expect(dale.getInfo()).toBe('Special Agent Dale Cooper');
+
         });
-        it('using interface', () => {
+
+        it('using an interface', () => {
+
             const emp = new Employee('Gordon', 'Smith');
             emp.job = 'Boss';
+
             reportIt(emp);
 
             function reportIt(item: fromHr.Reportable) {
-                console.log(item.getReport);
+                console.log(item.getReport());
             }
-            const newPay = getAdjustedPay(emp, 1.10);
 
-            interface HasSalary { salary: number };
-            function getAdjustedPay(item: HasSalary, percentage: number) {
-                return item.salary * percentage;
-            }
+            //const newPay = getAdjustedPay(emp, 1.10);
+
+
+            /*   function getAdjustedPay(item: fromHr.Reportable, percentage: number) {
+                  return item.salary * percentage;
+              } */
         });
+
+        it('using a class as an interface', () => {
+            class Monkey {
+                constructor(public name: string) { }
+
+                feed(what: string): string {
+                    return `Feeding ${this.name} some ${what}`;
+                }
+            }
+
+            const george = new Monkey('George');
+            expect(george.feed('Banana')).toBe('Feeding George some Banana');
+
+            const kong: Monkey = {
+                name: 'King Kong',
+                feed: function (what: string) {
+                    return `${this.name} eats ${what}`;
+                }
+            }
+
+
+        });
+
+    });
+    describe('redux starter kit', () => {
+
         it('an example (sort of)', () => {
+
             interface Action {
                 type: string;
             }
+
             class Increment implements Action {
                 type = 'Increment'
             }
+
             class Decrement implements Action {
                 type = 'Decrement'
             }
+
             class Reset implements Action {
                 type = 'Reset'
             }
+
+
             const stuffThatTheUserDid: Action[] = [
                 new Increment(),
                 new Increment(),
@@ -68,6 +107,7 @@ describe('modules', () => {
                 new Increment(),
                 new Decrement()
             ];
+
             const initialState = 0;
             const endCount = stuffThatTheUserDid.reduce((count: number, action: Action) => {
                 switch (action.type) {
@@ -82,9 +122,26 @@ describe('modules', () => {
                     }
                 }
             }, initialState)
+
             expect(endCount).toBe(4);
         });
-    });
-});
 
+    });
+
+    describe('that thing jeff didnt show you', () => {
+
+        it('has literal unions', () => {
+
+            type SeatType = 'aisle' | 'window' | 'middle';
+
+            const mySeat: SeatType = 'window';
+
+            if (mySeat === 'window') {
+                // do this
+            } else if (mySeat === 'aisle') {
+                // do this.
+            }
+
+        });
+    });
 });
